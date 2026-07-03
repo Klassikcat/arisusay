@@ -1,16 +1,16 @@
 [package]
-name = "arisuteabagging"
+name = "arisusay"
 version = "1.0.0"
 edition = "2021"
 description = "An ASCII teabag player for Tendou Aris — like momoisay, but she teabags. Homage to 청세치/세치혀."
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/klassikcat/arisuteabagging"
+repository = "https://github.com/Klassikcat/ArisuSay"
 keywords = ["cli", "ascii", "bluearchive", "terminal", "fun"]
 categories = ["command-line-utilities"]
 
 [[bin]]
-name = "arisuteabagging"
+name = "arisusay"
 path = "src/main.rs"
 
 [dependencies]

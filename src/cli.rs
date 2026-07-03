@@ -43,7 +43,7 @@ impl Motion {
 }
 
 #[derive(Parser)]
-#[command(name = "arisuteabagging")]
+#[command(name = "arisusay")]
 #[command(version)]
 #[command(
     about = "Like momoisay, but it's Tendou Aris from Blue Archive — and she teabags. \

@@ -1,4 +1,4 @@
-# arisuteabagging
+# ArisuSay
 
 Like [`momoisay`](https://crates.io/crates/momoisay), but instead of Momoi saying
 things, it's **Tendou Aris** (天童アリス — the dark-haired Blue Archive girl) doing her
@@ -23,7 +23,7 @@ Pick a variant with `animate <variant>` — by **number** or **name**:
 ## Install
 
 ```sh
-cargo build --release          # → target/release/arisuteabagging
+cargo build --release          # → target/release/arisusay
 # or install to ~/.cargo/bin:
 cargo install --path .
 ```
@@ -31,15 +31,15 @@ cargo install --path .
 ## Usage
 
 ```sh
-arisuteabagging say "정의 실현!"       # static Aris + speech bubble (prints once)
+arisusay say "정의 실현!"       # static Aris + speech bubble (prints once)
 
-arisuteabagging animate               # teabag, default speed
-arisuteabagging animate x2            # twice as fast        (same as: animate 2)
-arisuteabagging animate a             # hands-together bob   (same as: animate 3)
-arisuteabagging animate b             # both-hands-up bob    (same as: animate 4)
+arisusay animate               # teabag, default speed
+arisusay animate x2            # twice as fast        (same as: animate 2)
+arisusay animate a             # hands-together bob   (same as: animate 3)
+arisusay animate b             # both-hands-up bob    (same as: animate 4)
 
-arisuteabagging freestyle             # random variant each loop
-arisuteabagging freestyle -t "ㅋㅋㅋ"  # ...with a speech bubble
+arisusay freestyle             # random variant each loop
+arisusay freestyle -t "ㅋㅋㅋ"  # ...with a speech bubble
 ```
 
 **Controls:** `q`, `Esc`, or `Ctrl-C` to quit. The animation runs in the alternate
