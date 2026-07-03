@@ -14,15 +14,29 @@ use std::io::{self, stdout, Write};
 use std::time::Duration;
 use tokio::sync::broadcast;
 use tokio::time::{sleep, Duration as TokioDuration};
+use unicode_width::UnicodeWidthStr;
+
+fn display_width(s: &str) -> usize {
+    UnicodeWidthStr::width(s)
+}
+
+fn pad_right_to_width(s: &str, width: usize) -> String {
+    let pad = width.saturating_sub(display_width(s));
+    let mut padded = String::with_capacity(s.len() + pad);
+    padded.push_str(s);
+    padded.push_str(&" ".repeat(pad));
+    padded
+}
 
 /// Wrap `text` into a bordered speech bubble with a tail pointing at Aris.
 pub fn create_speech_bubble(text: &str, max_width: usize) -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();
     let mut current = String::new();
     for word in text.split_whitespace() {
+        let word_width = display_width(word);
         if current.is_empty() {
             current = word.to_string();
-        } else if current.len() + 1 + word.len() <= max_width {
+        } else if display_width(&current) + 1 + word_width <= max_width {
             current.push(' ');
             current.push_str(word);
         } else {
@@ -39,14 +53,14 @@ pub fn create_speech_bubble(text: &str, max_width: usize) -> Vec<String> {
 
     let width = lines
         .iter()
-        .map(|l| l.chars().count())
+        .map(|l| display_width(l))
         .max()
         .unwrap_or(0)
         .max(1);
     let mut bubble = Vec::new();
     bubble.push(format!("┌{}┐", "─".repeat(width + 2)));
     for line in &lines {
-        bubble.push(format!("│ {line:<width$} │"));
+        bubble.push(format!("│ {} │", pad_right_to_width(line, width)));
     }
     bubble.push(format!("└{}┘", "─".repeat(width + 2)));
     // tail pointing left toward Aris
@@ -58,7 +72,7 @@ pub fn create_speech_bubble(text: &str, max_width: usize) -> Vec<String> {
 
 /// Bubble width in terminal columns (border-aware).
 fn bubble_cols(bubble: &[String]) -> u16 {
-    bubble.iter().map(|l| l.chars().count()).max().unwrap_or(0) as u16
+    bubble.iter().map(|l| display_width(l)).max().unwrap_or(0) as u16
 }
 
 /// Print a single still frame beside a speech bubble, once, to stdout.
@@ -154,7 +168,8 @@ pub async fn play_once(
     // Footer padded to the full canvas width (centered), so switching motions
     // with different label lengths leaves no stray characters behind.
     let text_line = format!("▶ {label}   ·   q / Esc to quit");
-    let pad = (canvas_w as usize).saturating_sub(text_line.chars().count());
+    let text_width = display_width(&text_line);
+    let pad = (canvas_w as usize).saturating_sub(text_width);
     let footer = format!(
         "{}{}{}",
         " ".repeat(pad / 2),
@@ -178,7 +193,7 @@ pub async fn play_once(
                 .and_then(|i| frame.lines.get(i as usize))
                 .copied()
                 .unwrap_or("");
-            let padded = format!("{line:<width$}", width = canvas_w as usize);
+            let padded = pad_right_to_width(line, canvas_w as usize);
             execute!(out, MoveTo(start_x, start_y + row), Print(padded))?;
         }
 
@@ -212,6 +227,14 @@ mod tests {
         let b = create_speech_bubble("hello world", 30);
         assert!(b.first().unwrap().starts_with('┌'));
         assert!(b.iter().any(|l| l.contains("hello")));
+    }
+
+    #[test]
+    fn bubble_uses_display_width_for_korean() {
+        let b = create_speech_bubble("안녕 세계", 30);
+        assert_eq!(display_width(&b[0]), display_width(&b[1]));
+        assert_eq!(display_width(&b[0]), display_width(&b[2]));
+        assert!(b[1].contains("안녕 세계"));
     }
 
     #[test]

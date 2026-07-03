@@ -1,9 +1,9 @@
 [package]
 name = "arisusay"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "An ASCII teabag player for Tendou Aris — like momoisay, but she teabags. Homage to 청세치/세치혀."
-license = "MIT"
+license-file = "LICENSE"
 readme = "README.md"
 repository = "https://github.com/Klassikcat/ArisuSay"
 keywords = ["cli", "ascii", "bluearchive", "terminal", "fun"]
@@ -19,6 +19,7 @@ crossterm = "0.28"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
 lazy_static = "1"
 rand = "0.9"
+unicode-width = "0.2.2"
 
 [profile.release]
 opt-level = 3

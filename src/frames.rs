@@ -68,7 +68,10 @@ lazy_static! {
     pub static ref STATIC_FRAME: Frame = Frame::parse(STATIC_STR);
     // The transparent-source teabag, at two speeds: base (default) and x2.
     pub static ref BASE_FRAMES: AnimatedFrames = AnimatedFrames::parse(ARIS_STR, 46);
-    pub static ref X2_FRAMES: AnimatedFrames = AnimatedFrames::parse(ARIS_STR, 23);
+    pub static ref X2_FRAMES: AnimatedFrames = AnimatedFrames {
+        frames: BASE_FRAMES.frames.clone(),
+        interval_ms: 23,
+    };
     // Bobs cut from the YouTube clip (green-screen source).
     pub static ref A_FRAMES: AnimatedFrames = AnimatedFrames::parse(MOTION_A_STR, 75);
     pub static ref B_FRAMES: AnimatedFrames = AnimatedFrames::parse(MOTION_B_STR, 75);

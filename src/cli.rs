@@ -12,11 +12,11 @@ pub enum Motion {
     /// Same, but twice as fast.
     #[value(name = "x2", alias = "2")]
     X2,
-    /// Hands-together bob from the clip (1:09-1:18, minus the clone intro).
-    #[value(name = "a", alias = "3")]
+    /// Dance-like teabag bob from the clip (1:09-1:18, minus the clone intro).
+    #[value(name = "dance", alias = "3", alias = "a")]
     A,
-    /// Both-hands-up bob from the clip (1:20-1:24).
-    #[value(name = "b", alias = "4")]
+    /// Hands-up teabag bob from the clip (1:20-1:24).
+    #[value(name = "handsup", alias = "4", alias = "b")]
     B,
 }
 
@@ -36,8 +36,8 @@ impl Motion {
         match self {
             Motion::Base => "teabag",
             Motion::X2 => "teabag x2",
-            Motion::A => "motion a",
-            Motion::B => "hands up",
+            Motion::A => "dance",
+            Motion::B => "handsup",
         }
     }
 }
@@ -64,7 +64,7 @@ pub enum Commands {
 
     /// Loop Aris teabagging until you quit (q / Esc / Ctrl-C)
     Animate {
-        /// Variant: 1|2|3|4 or teabag|x2|a|b
+        /// Variant: 1|2|3|4 or teabag|x2|dance|handsup
         #[arg(value_enum, default_value = "teabag")]
         variant: Motion,
 
