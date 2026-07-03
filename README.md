@@ -13,12 +13,12 @@ alone — background removed — halo and all.
 
 Pick a variant with `animate <variant>` — by **number** or **name**:
 
-| # | name     | what it is |
-|---|----------|------------|
-| 1 | `teabag` | the teabag loop (transparent source), default speed |
-| 2 | `x2`     | same loop, twice as fast |
-| 3 | `a`      | hands-together bob from the clip (1:09–1:18, minus the clone intro) |
-| 4 | `b`      | both-hands-up bob from the clip (1:20–1:24) |
+| #   | name     | what it is                                                          |
+| --- | -------- | ------------------------------------------------------------------- |
+| 1   | `teabag` | the teabag loop (transparent source), default speed                 |
+| 2   | `x2`     | same loop, twice as fast                                            |
+| 3   | `a`      | hands-together bob from the clip (1:09–1:18, minus the clone intro) |
+| 4   | `b`      | both-hands-up bob from the clip (1:20–1:24)                         |
 
 ## Install
 
@@ -31,7 +31,7 @@ cargo install --path .
 ## Usage
 
 ```sh
-arisusay say "정의 실현!"       # static Aris + speech bubble (prints once)
+arisusay say "bam ba ca bam!"       # static Aris + speech bubble (prints once)
 
 arisusay animate               # teabag, default speed
 arisusay animate x2            # twice as fast        (same as: animate 2)
