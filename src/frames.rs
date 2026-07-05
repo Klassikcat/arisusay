@@ -83,7 +83,13 @@ lazy_static! {
 pub fn canvas_dims() -> (u16, u16) {
     let mut w = STATIC_FRAME.width();
     let mut h = STATIC_FRAME.height();
-    for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES, &*C_FRAMES] {
+    for m in [
+        &*BASE_FRAMES,
+        &*X2_FRAMES,
+        &*A_FRAMES,
+        &*B_FRAMES,
+        &*C_FRAMES,
+    ] {
         let (mw, mh) = m.max_dims();
         w = w.max(mw);
         h = h.max(mh);
@@ -112,7 +118,13 @@ mod tests {
 
     #[test]
     fn frames_are_nonempty_and_rectangular() {
-        for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES, &*C_FRAMES] {
+        for m in [
+            &*BASE_FRAMES,
+            &*X2_FRAMES,
+            &*A_FRAMES,
+            &*B_FRAMES,
+            &*C_FRAMES,
+        ] {
             assert!(!m.frames.is_empty());
             let (w, h) = m.max_dims();
             assert!(w > 0 && h > 0);
