@@ -1,9 +1,9 @@
 //! Command-line interface — mirrors `momoisay` (say / animate / freestyle).
 
-use crate::frames::{AnimatedFrames, A_FRAMES, BASE_FRAMES, B_FRAMES, X2_FRAMES};
+use crate::frames::{AnimatedFrames, A_FRAMES, BASE_FRAMES, B_FRAMES, C_FRAMES, X2_FRAMES};
 use clap::{Parser, Subcommand, ValueEnum};
 
-/// Aris teabagging. Pick a variant by number (`1`..`4`) or name.
+/// Aris teabagging. Pick a variant by number (`1`..`5`) or name.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
 pub enum Motion {
     /// Aris teabagging (default speed).
@@ -12,16 +12,19 @@ pub enum Motion {
     /// Same, but twice as fast.
     #[value(name = "x2", alias = "2")]
     X2,
-    /// Dance-like teabag bob from the clip (1:09-1:18, minus the clone intro).
-    #[value(name = "dance", alias = "3", alias = "a")]
+    /// Mid-teabag bob from the clip (1:09-1:18, minus the clone intro) — formerly `dance`.
+    #[value(name = "bagging", alias = "3", alias = "a")]
     A,
     /// Hands-up teabag bob from the clip (1:20-1:24).
     #[value(name = "handsup", alias = "4", alias = "b")]
     B,
+    /// Fist-pump dance bob from the clip's opening (0:01-0:06), turning around halfway.
+    #[value(name = "dance", alias = "5", alias = "c")]
+    C,
 }
 
 impl Motion {
-    pub const ALL: [Motion; 4] = [Motion::Base, Motion::X2, Motion::A, Motion::B];
+    pub const ALL: [Motion; 5] = [Motion::Base, Motion::X2, Motion::A, Motion::B, Motion::C];
 
     pub fn frames(self) -> &'static AnimatedFrames {
         match self {
@@ -29,6 +32,7 @@ impl Motion {
             Motion::X2 => &X2_FRAMES,
             Motion::A => &A_FRAMES,
             Motion::B => &B_FRAMES,
+            Motion::C => &C_FRAMES,
         }
     }
 
@@ -36,8 +40,9 @@ impl Motion {
         match self {
             Motion::Base => "teabag",
             Motion::X2 => "teabag x2",
-            Motion::A => "dance",
+            Motion::A => "bagging",
             Motion::B => "handsup",
+            Motion::C => "dance",
         }
     }
 }
@@ -64,7 +69,7 @@ pub enum Commands {
 
     /// Loop Aris teabagging until you quit (q / Esc / Ctrl-C)
     Animate {
-        /// Variant: 1|2|3|4 or teabag|x2|dance|handsup
+        /// Variant: 1|2|3|4|5 or teabag|x2|bagging|handsup|dance
         #[arg(value_enum, default_value = "teabag")]
         variant: Motion,
 

@@ -17,8 +17,9 @@ Pick a variant with `animate <variant>` — by **number** or **name**:
 | --- | --------- | ----------------------------------------------------------------- |
 | 1   | `teabag`  | the teabag loop (transparent source), default speed               |
 | 2   | `x2`      | same loop, twice as fast                                          |
-| 3   | `dance`   | dance-like teabag bob from the clip (alias: `a`)                  |
+| 3   | `bagging` | mid-teabag bob from the clip — the ex-`dance` (alias: `a`)        |
 | 4   | `handsup` | hands-up teabag bob from the clip (alias: `b`)                    |
+| 5   | `dance`   | fist-pump dance bob from the clip's opening (alias: `c`)          |
 
 ## Install
 
@@ -40,8 +41,9 @@ arisusay say "bam ba ca bam!"       # static Aris + speech bubble (prints once)
 
 arisusay animate               # teabag, default speed
 arisusay animate x2            # twice as fast        (same as: animate 2)
-arisusay animate dance         # dance-like teabag bob (same as: animate 3 / a)
+arisusay animate bagging       # mid-teabag bob         (same as: animate 3 / a)
 arisusay animate handsup       # hands-up teabag bob    (same as: animate 4 / b)
+arisusay animate dance         # opening fist-pump bob  (same as: animate 5 / c)
 arisusay animate dance -t "ㅋㅋㅋ" # animation + speech bubble
 
 arisusay freestyle             # random variant each loop
@@ -73,13 +75,17 @@ curl -L -o refs/aris2.gif "https://media.tenor.com/oA5ClfmykW8AAAAi/alice-aris.g
 # green-screen clips from https://www.youtube.com/watch?v=T9F1Wk8DQdg
 yt-dlp --download-sections "*00:01:05-00:01:27" -f "bv*[height<=720]/b" \
        -o "refs/yt_src.%(ext)s"  "https://www.youtube.com/watch?v=T9F1Wk8DQdg"
+yt-dlp --download-sections "*00:00:01-00:00:06" -f "bv*[height<=720]/b" \
+       -o "refs/yt_src2.%(ext)s" "https://www.youtube.com/watch?v=T9F1Wk8DQdg"
 yt-dlp --download-sections "*00:01:14-00:01:30" -f "bv*[height<=720]/b" \
        -o "refs/yt_src3.%(ext)s" "https://www.youtube.com/watch?v=T9F1Wk8DQdg"
 ```
 
 - `aris2.gif` — `teabag` / `x2`
-- `yt_src.webm` — `dance` is cut from it (8.5–13 s: the single-Aris
-  dance-like teabag bob, after the clone intro ends)
+- `yt_src.webm` — `bagging` is cut from it (8.5–13 s: the single-Aris
+  mid-teabag bob, after the clone intro ends)
+- `yt_src2.mp4` — `dance` is all of it (the opening fist-pump bob that
+  turns around halfway, before any clones show up)
 - `yt_src3.mp4` — `handsup` is cut from it (5.75–11.3 s: the hands-up teabag bob,
   ending before a second Aris walks in)
 
@@ -100,10 +106,10 @@ or jittery, then fills a Braille dot wherever the pixel is opaque and dark.
 
 ```
 src/main.rs        # tokio entry, clap dispatch, animation loop
-src/cli.rs         # say / animate / freestyle ; Motion (teabag, x2, dance, handsup)
+src/cli.rs         # say / animate / freestyle ; Motion (teabag, x2, bagging, handsup, dance)
 src/frames.rs      # embedded frames + loader (yields every frame, verbatim lines)
 src/display.rs     # speech bubble, RAII terminal guard, exit listener, render loop
-frames/*.txt       # generated Braille frames (aris, motion_a, motion_b, static)
+frames/*.txt       # generated Braille frames (aris, motion_a..motion_c, static)
 tools/gen_frames.py  # frame generator (sources go in refs/, not committed)
 ```
 

@@ -15,6 +15,7 @@ const STATIC_STR: &str = include_str!("../frames/static.txt");
 const ARIS_STR: &str = include_str!("../frames/aris.txt");
 const MOTION_A_STR: &str = include_str!("../frames/motion_a.txt");
 const MOTION_B_STR: &str = include_str!("../frames/motion_b.txt");
+const MOTION_C_STR: &str = include_str!("../frames/motion_c.txt");
 
 #[derive(Debug, Clone)]
 pub struct Frame {
@@ -75,13 +76,14 @@ lazy_static! {
     // Bobs cut from the YouTube clip (green-screen source).
     pub static ref A_FRAMES: AnimatedFrames = AnimatedFrames::parse(MOTION_A_STR, 75);
     pub static ref B_FRAMES: AnimatedFrames = AnimatedFrames::parse(MOTION_B_STR, 75);
+    pub static ref C_FRAMES: AnimatedFrames = AnimatedFrames::parse(MOTION_C_STR, 75);
 }
 
 /// The canvas size that fits every motion and the static still.
 pub fn canvas_dims() -> (u16, u16) {
     let mut w = STATIC_FRAME.width();
     let mut h = STATIC_FRAME.height();
-    for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES] {
+    for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES, &*C_FRAMES] {
         let (mw, mh) = m.max_dims();
         w = w.max(mw);
         h = h.max(mh);
@@ -99,6 +101,7 @@ mod tests {
         assert_eq!(BASE_FRAMES.frames.len(), ARIS_STR.matches(SEP).count() + 1);
         assert_eq!(A_FRAMES.frames.len(), MOTION_A_STR.matches(SEP).count() + 1);
         assert_eq!(B_FRAMES.frames.len(), MOTION_B_STR.matches(SEP).count() + 1);
+        assert_eq!(C_FRAMES.frames.len(), MOTION_C_STR.matches(SEP).count() + 1);
     }
 
     #[test]
@@ -109,7 +112,7 @@ mod tests {
 
     #[test]
     fn frames_are_nonempty_and_rectangular() {
-        for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES] {
+        for m in [&*BASE_FRAMES, &*X2_FRAMES, &*A_FRAMES, &*B_FRAMES, &*C_FRAMES] {
             assert!(!m.frames.is_empty());
             let (w, h) = m.max_dims();
             assert!(w > 0 && h > 0);

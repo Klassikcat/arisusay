@@ -11,6 +11,8 @@ Sources (in refs/):
   * aris2.gif    — transparent-background teabag loop (its halo reads at Braille res)
   * yt_src.webm  — green-screen clip around 1:05-1:27 (keyframe slop shifts it a few
         seconds earlier); motion_a = 8.5-13s = the single-Aris bob after the clones
+  * yt_src2.mp4  — green-screen clip of 0:01-0:06 (the opening, single Aris);
+        motion_c = the whole file = the fist-pump dance bob that turns around halfway
   * yt_src3.mp4  — green-screen clip around 1:14-1:30;
         motion_b = 5.75-11.3s = the BOTH-HANDS-UP bob (the 1:20-1:24 bit): first
         three and last two checkHU2 cells dropped, ends before a second Aris
@@ -39,6 +41,10 @@ SOURCES = {
     "aris":     {"kind": "gif",   "path": "refs/aris2.gif"},
     "motion_a": {"kind": "green", "path": "refs/yt_src.webm",  "ss": 8.5,  "to": 13,   "fps": 12},
     "motion_b": {"kind": "green", "path": "refs/yt_src3.mp4",  "ss": 5.75, "to": 11.3, "fps": 12},
+    # motion_c's union box is tall (high halo + a deep bow mid-turn) — at 34 cells it
+    # would be 25 rows and `animate` would stop fitting 80x24 terminals, so render it
+    # 30 cells wide (22 rows) and center it on the shared 34-cell canvas.
+    "motion_c": {"kind": "green", "path": "refs/yt_src2.mp4",  "ss": 0,    "to": 6,    "fps": 12, "wcells": 30},
 }
 STATIC_FROM = "aris"
 
@@ -118,14 +124,14 @@ def union_box(frames):
     return (max(0, x0 - PAD), max(0, y0 - PAD), min(w, x1 + PAD), min(h, y1 + PAD))
 
 
-def to_braille(rgba, alpha, minor, box):
+def to_braille(rgba, alpha, minor, box, wcells=WCELLS):
     im = rgba.crop(box)
     a = np.asarray(Image.fromarray(alpha).crop(box), np.float32) / 255.0
     mn = np.asarray(Image.fromarray(minor).crop(box), np.float32) / 255.0
     rgb = np.asarray(im.convert("RGBA"), np.float32)[..., :3] / 255.0
     white = rgb * a[..., None] + (1 - a[..., None])
     w, h = im.size
-    wpx = WCELLS * 2
+    wpx = wcells * 2
     hpx = max(4, round(wpx * h / w))
     lum = Image.fromarray((white * 255).astype("uint8")).convert("L").resize((wpx, hpx), Image.Resampling.LANCZOS)
     opa = Image.fromarray((a * 255).astype("uint8")).resize((wpx, hpx), Image.Resampling.LANCZOS)
@@ -146,6 +152,10 @@ def to_braille(rgba, alpha, minor, box):
             bits = sum((1 << bit) for r, c, bit in _DOTS if m[by + r, bx + c])
             row.append(chr(0x2800 + bits))
         lines.append("".join(row))
+    if wcells < WCELLS:  # center narrower art on the shared WCELLS-wide canvas
+        lpad = "⠀" * ((WCELLS - wcells) // 2)
+        rpad = "⠀" * (WCELLS - wcells - (WCELLS - wcells) // 2)
+        lines = [lpad + ln + rpad for ln in lines]
     return "\n".join(lines)
 
 
@@ -155,7 +165,7 @@ if __name__ == "__main__":
     for name, spec in SOURCES.items():
         frames = load_source(spec)
         box = union_box(frames)
-        arts = [to_braille(f, a, mn, box) for f, a, mn in frames]
+        arts = [to_braille(f, a, mn, box, spec.get("wcells", WCELLS)) for f, a, mn in frames]
         open(f"frames/{name}.txt", "w").write(SEP.join(arts))
         first[name] = arts[0]
         print(f"{name}: {len(arts)} frames  box={box}")
